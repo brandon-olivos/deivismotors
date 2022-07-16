@@ -28,7 +28,7 @@ return [
     //version2
 
     'articulosventas' => [
-        'class' => 'app\modules\articulosventas\Articulosventas',
+        'class' => 'app\modules\articulosventas\ArticulosVentas',
     ],
 
     'articulosentradasalida' => [
