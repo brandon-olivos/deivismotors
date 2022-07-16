@@ -46,13 +46,12 @@ class DefaultController extends Controller
      * Renders the index view for the module
      * @return string
      */
-    public function actionIndex()
-    {
+    public function actionIndex(){
+
         return $this->render('index');
     }
 
-    public function actionGetModal()
-    {
+    public function actionGetModal(){
         $padres = Opciones::find()->where(["flg_padre" => true, "id_padre" => 0])->all();
         $plantilla = Yii::$app->controller->renderPartial("crearModulo", [
             "padres" => $padres
@@ -70,6 +69,17 @@ class DefaultController extends Controller
                 $modulo->nombre_opcion = $post['nombre'];
                 $modulo->url = $post['ruta'];
                 $modulo->id_padre = $post['padre'];
+
+                if ($post['padre'] == 0) {
+                    $modulo->flg_padre = 1;
+                }else{
+                    $modulo->flg_padre = 0;
+                }
+
+                if ($post['ruta'] == "#") {
+                    $modulo->flg_padre = 0;
+                }
+
                 $modulo->id_usuario_reg = Yii::$app->user->getId();
                 $modulo->fecha_reg = Utils::getFechaActual();
                 $modulo->ipmaq_reg = Utils::obtenerIP();
@@ -91,17 +101,20 @@ class DefaultController extends Controller
         }
     }
 
-    public function actionGetModalEdit($id)
-    {
+    public function actionGetModalEdit($id){
+
         $data = Opciones::findOne($id);
+        $padres = Opciones::find()->where(["flg_padre" => true, "id_padre" => 0])->all();
+
         $plantilla = Yii::$app->controller->renderPartial("editarModulo", [
-            "modulo" => $data
+            "modulo" => $data,
+            "padres" => $padres
         ]);
         Utils::jsonEncode(["plantilla" => $plantilla]);
     }
 
-    public function actionUpdate()
-    {
+    public function actionUpdate(){
+
         if (Yii::$app->request->post()) {
             $transaction = Yii::$app->db->beginTransaction();
             $post = Yii::$app->request->post();
@@ -109,6 +122,18 @@ class DefaultController extends Controller
                 $modulo = Opciones::findOne($post['id_modulo']);
                 $modulo->nombre_opcion = $post['nombre'];
                 $modulo->url = $post['ruta'];
+                $modulo->id_padre = $post['padre'];
+
+                if ($post['padre'] == 0) {
+                    $modulo->flg_padre = 1;
+                }else{
+                    $modulo->flg_padre = 0;
+                }
+
+                if ($post['ruta'] != "#") {
+                    $modulo->flg_padre = 0;
+                }
+
                 $modulo->id_usuario_act = Yii::$app->user->getId();
                 $modulo->fecha_act = Utils::getFechaActual();
                 $modulo->ipmaq_act = Utils::obtenerIP();
@@ -159,14 +184,13 @@ class DefaultController extends Controller
         }
     }
 
-    public function actionLista()
-    {
+    public function actionLista(){
         $page = empty($_POST["pagination"]["page"]) ? 0 : $_POST["pagination"]["page"];
         $pages = empty($_POST["pagination"]["pages"]) ? 1 : $_POST["pagination"]["pages"];
         $buscar = empty($_POST["query"]["generalSearch"]) ? '' : $_POST["query"]["generalSearch"];
         $perpage = $_POST["pagination"]["perpage"];
         $row = ($page * $perpage) - $perpage;
-        $length = ($perpage * $page) - 1;
+        $length =  $perpage;
 
         try {
             $command = Yii::$app->db->createCommand('call listadoModulo(:row,:length,:buscar)');
@@ -174,16 +198,40 @@ class DefaultController extends Controller
             $command->bindValue(':length', $length);
             $command->bindValue(':buscar', $buscar);
             $result = $command->queryAll();
+
+            $padres = Opciones::find()->where(["flg_padre" => 1])->all();
+
+
         } catch (\Exception $e) {
             echo "Error al ejecutar procedimiento" . $e;
         }
 
         $data = [];
+        $flgpadre = 0;
+
         foreach ($result as $k => $row) {
+
+            if ($row['flg_padre'] == 1) {
+                
+                $flgpadre = "";
+            }
+
+            else{
+
+                foreach ($padres as $j => $ro) {
+
+                    if ($ro['id_opcion'] == $row['padre']) {
+                        
+                        $flgpadre = $ro['nombre_opcion'];
+                    }
+                }  
+            }
+
+
             $data[] = [
                 "nombre" => $row['nombre_modulo'],
                 "ruta" => $row['ruta'],
-                "padre" => $row['padre'],
+                "padre" => $flgpadre,
                 "accion" => '<button class="btn  btn-sm btn-light-success font-weight-bold mr-2" onclick="funcionEditarModulo(' . $row["id_modulo"] . ')"><i class="flaticon-edit"></i></button>
                              <button class="btn  btn-sm btn-light-danger font-weight-bold mr-2" onclick="funcionEliminarModulo(' . $row["id_modulo"] . ')"><i class="flaticon-delete"></i></button>',
             ];

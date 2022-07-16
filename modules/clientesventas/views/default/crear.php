@@ -19,7 +19,7 @@ use app\modules\clientesventas\bundles\ClientesVentasAsset;
     <div class="row">
         <div class="form-group col-md-6">
              <label class="font-small">Tipo Documento </label>
-                    <select class="form-control form-control-sm" id="tipo_documento_entidad" name="tipo_documento_entidad">
+                    <select class="form-control form-control-sm" id="tipo_documento" name="tipo_documento">
                         <?php foreach ($tipo_documento as $v) : ?>
                             <option value="<?= $v->id_tipo_documento ?>"><?= $v->documento ?></option>
                         <?php endforeach; ?>
@@ -29,7 +29,7 @@ use app\modules\clientesventas\bundles\ClientesVentasAsset;
 
         <div class="form-group col-md-6">
             <label>Numero Documento<span class="text-danger">*</span></label>
-            <input type="text" style="text-transform:uppercase;" class="form-control" placeholder="Ingrese Numero Documento" name="numero_documento_entidad" id="numero_documento_entidad" 
+            <input type="text" style="text-transform:uppercase;" class="form-control" placeholder="Ingrese Numero Documento" name="numero_documento" id="numero_documento" 
                    value=""/>
         </div>
     </div>
@@ -67,20 +67,6 @@ use app\modules\clientesventas\bundles\ClientesVentasAsset;
             <input type="text" style="text-transform:uppercase;" class="form-control" placeholder="Ingrese Direccion" name="direccion" id="direccion" />
         </div>
     </div>
-
-    <div class="row">
-        <div class="form-group col-md-6">
-            <label>Urbanizacion</label>
-            <input type="text" style="text-transform:uppercase;" class="form-control" placeholder="Ingrese Urbanizacion" name="urbanizacion" id="urbanizacion" />
-        </div>
-
-        <div class="form-group col-md-6">
-            <label>Referencias</label>
-            <input type="text" style="text-transform:uppercase;" class="form-control" placeholder="Ingrese Referencias" name="referencias" id="referencias" />
-        </div> 
-    </div>
-
-
 
 
     <hr>

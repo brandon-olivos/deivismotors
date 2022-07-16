@@ -39,15 +39,18 @@ $("#modal-modulo").on("click", function () {
                     rules: {
                         nombre: "required",
                         ruta: "required",
+                        padre: "required",
                     },
                     messages: {
                         nombre: "Por favor ingrese datos",
                         ruta: "Por favor ingrese datos",
+                        padre: "Por favor ingrese datos",
                     },
                     submitHandler: function () {
                         var nombre = $("#nombre").val();
                         var ruta = $("#ruta").val();
                         var padre = $("#padre").val();
+
                         $.ajax({
                             type: "POST",
                             dataType: 'json',
@@ -102,6 +105,8 @@ function funcionEditarModulo(id) {
                     submitHandler: function () {
                         var nombre = $("#nombre").val();
                         var ruta = $("#ruta").val();
+                        var padre = $("#padre").val();
+                        
                         $.ajax({
                             type: "POST",
                             dataType: 'json',
@@ -110,6 +115,7 @@ function funcionEditarModulo(id) {
                             data: {
                                 id_modulo: id,
                                 nombre: nombre,
+                                padre: padre,
                                 ruta: ruta,
                             },
                             success: function (response) {

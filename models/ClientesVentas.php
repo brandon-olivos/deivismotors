@@ -14,7 +14,8 @@ use Yii;
  * @property string|null $razon_social
  * @property string|null $telefono
  * @property string|null $correo
- * @property int|null $id_persona
+ * @property int $id_ubigeo
+ * @property string|null $direccion
  * @property int $id_usuario_reg
  * @property string $fecha_reg
  * @property string $ipmaq_reg
@@ -42,11 +43,13 @@ class ClientesVentas extends \yii\db\ActiveRecord
     {
         return [
             [['id_tipo_entidad', 'id_tipo_documento', 'numero_documento', 'id_usuario_reg', 'fecha_reg', 'ipmaq_reg'], 'required'],
-            [['id_tipo_entidad', 'id_tipo_documento', 'id_persona', 'id_usuario_reg', 'id_usuario_act', 'id_usuario_del'], 'integer'],
+
+            [['id_tipo_entidad', 'id_tipo_documento', 'id_ubigeo', 'id_usuario_reg', 'id_usuario_act', 'id_usuario_del'], 'integer'],
             [['fecha_reg', 'fecha_act', 'fecha_del'], 'safe'],
             [['numero_documento', 'telefono'], 'string', 'max' => 50],
             [['razon_social'], 'string', 'max' => 200],
             [['correo'], 'string', 'max' => 100],
+            [['direccion'], 'string', 'max' => 500],
             [['ipmaq_reg', 'ipmaq_act', 'ipmaq_del'], 'string', 'max' => 20],
         ];
     }
@@ -64,7 +67,8 @@ class ClientesVentas extends \yii\db\ActiveRecord
             'razon_social' => 'Razon Social',
             'telefono' => 'Telefono',
             'correo' => 'Correo',
-            'id_persona' => 'Id Persona',
+            'id_ubigeo' => 'Id Ubigeo',
+            'direccion' => 'Direccion',
             'id_usuario_reg' => 'Id Usuario Reg',
             'fecha_reg' => 'Fecha Reg',
             'ipmaq_reg' => 'Ipmaq Reg',

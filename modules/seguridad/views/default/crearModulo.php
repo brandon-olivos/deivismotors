@@ -10,7 +10,7 @@
     <div class="form-group">
         <label>Módulo Padre<span class="text-danger">*</span></label>
         <select class="form-control" name="padre" id="padre">
-            <option value="0">No padre</option>
+            <option value="0">Padre</option>
             <?php foreach ($padres as $p): ?>
                 <option value="<?= $p->id_opcion ?>"><?= $p->nombre_opcion ?></option>
             <?php endforeach; ?>

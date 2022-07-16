@@ -21,6 +21,11 @@ return [
         'class' => 'app\modules\main\Main',
     ],
 
+    //version2
+    'clientesventas' => [
+        'class' => 'app\modules\clientesventas\ClientesVentas',
+    ],
+    //version2
 
     'articulosventas' => [
         'class' => 'app\modules\articulosventas\Articulosventas',

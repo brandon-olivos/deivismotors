@@ -8,13 +8,13 @@ use yii\web\HttpException;
 use Exception;
 use app\components\Utils;
 //models
-use app\models\Productos;
+
+//version2
 use app\models\TipoEntidad;
 use app\models\Ubigeos;
 use app\models\TipoDocumentos;
-use app\models\ClientesVentas; 
-use app\models\Direcciones;
-//use \app\models\ClientesVentas;
+use app\models\ClientesVentas;
+//version2
 
 /**
  * Default controller for the `clientesventas` module
@@ -40,7 +40,7 @@ class DefaultController extends Controller {
             "tipo_entidad" => $tipo_entidad,
             "tipo_documento" => $tipo_documento,
             "ubigeos" => $ubigeos,
-           /// "numerodoc" => $id,
+
         ]);
         Yii::$app->response->format = \yii\web\Response::FORMAT_JSON;
         Yii::$app->response->data = ["plantilla" => $plantilla];
@@ -61,7 +61,8 @@ class DefaultController extends Controller {
                 $entidades->razon_social = $post['razon_social'];
                 $entidades->telefono = $post['telefono'];
                 $entidades->correo = $post['correo'];
-                //$entidades->flg_estado = Utils::ACTIVO;
+                $entidades->id_ubigeo = $post['ubigeos'];
+                $entidades->direccion = $post['direccion'];
                 $entidades->id_usuario_reg = Yii::$app->user->getId();
                 $entidades->fecha_reg = Utils::getFechaActual();
                 $entidades->ipmaq_reg = Utils::obtenerIP();
@@ -71,29 +72,12 @@ class DefaultController extends Controller {
                     throw new HttpException("No se puede guardar datos Persona");
                 }
 
-                $direccion = new Direcciones();
-                $direccion->id_entidad = $entidades->id_entidad;
-                $direccion->id_ubigeo = $post['ubigeos'];
-                $direccion->direccion = $post['direccion'];
-                $direccion->urbanizacion = $post['urbanizacion'];
-                $direccion->referencias = $post['referencias'];
-                $direccion->flg_estado = Utils::ACTIVO;
-                $direccion->id_usuario_reg = Yii::$app->user->getId();
-                $direccion->fecha_reg = Utils::getFechaActual();
-                $direccion->ipmaq_reg = Utils::obtenerIP();
-
-                if (!$direccion->save()) {
-                    Utils::show($direccion->getErrors(), true);
-                    throw new HttpException("No se puede guardar datos Persona");
-                }
-
                 $transaction->commit();
             } catch (Exception $ex) {
                 Utils::show($ex, true);
                 $transaction->rollback();
             }
 
-            // echo json_encode($entidades->id_entidad);
             Yii::$app->response->format = \yii\web\Response::FORMAT_JSON;
             Yii::$app->response->data = $entidades->id_entidad;
         } else {
@@ -102,18 +86,16 @@ class DefaultController extends Controller {
     }
 
     public function actionGetModalEdit($id) {
+
         $tipo_entidad = TipoEntidad::find()->where(["fecha_del" => null])->all();
         $ubigeos = Ubigeos::find()->where(["fecha_del" => null])->all();
         $tipo_documento = TipoDocumentos::find()->where(["fecha_del" => null])->all();
-        $entidad = ClientesVentas::find()->where(["fecha_del" => null])->all();
         $data = ClientesVentas::findOne($id);
-        $direccion = Direcciones::find()->where(["fecha_del" => null, "id_entidad" => $data->id_entidad])->one();
 
         $plantilla = Yii::$app->controller->renderPartial("editar", [
             "entidad" => $data,
             "tipo_entidad" => $tipo_entidad,
             "tipo_documento" => $tipo_documento,
-            "direccion" => $direccion,
             "ubigeos" => $ubigeos,
         ]);
         Yii::$app->response->format = \yii\web\Response::FORMAT_JSON;
@@ -127,7 +109,7 @@ class DefaultController extends Controller {
             $post = Yii::$app->request->post();
 
             try {
-                //Traemos los datos mediante el id 
+
                 $entidades = ClientesVentas::findOne($post['id_entidad']);
                 $entidades->id_tipo_entidad = $post['tipo_entidad'];
                 $entidades->id_tipo_documento = $post['tipo_documento'];
@@ -135,6 +117,8 @@ class DefaultController extends Controller {
                 $entidades->razon_social = $post['razon_social'];
                 $entidades->telefono = $post['telefono'];
                 $entidades->correo = $post['correo'];
+                $entidades->id_ubigeo = $post['ubigeos'];
+                $entidades->direccion = $post['direccion'];
 
                 $entidades->id_usuario_act = Yii::$app->user->getId();
                 $entidades->fecha_act = Utils::getFechaActual();
@@ -145,24 +129,6 @@ class DefaultController extends Controller {
                     throw new HttpException("No se puede actualizar datos Persona");
                 }
 
-                $direccion = Direcciones::findOne($post['id_direccion']);
-                $direccion->id_direccion = $post['id_direccion'];
-                $direccion->id_entidad = $entidades->id_entidad;
-                $direccion->id_ubigeo = $post['ubigeos'];
-                $direccion->direccion = $post['direccion'];
-                $direccion->urbanizacion = $post['urbanizacion'];
-                $direccion->referencias = $post['referencias'];
-                $direccion->flg_estado = Utils::ACTIVO;
-                $direccion->id_usuario_act = Yii::$app->user->getId();
-                $direccion->fecha_act = Utils::getFechaActual();
-                $direccion->ipmaq_act = Utils::obtenerIP();
-
-                if (!$direccion->update()) {
-                    Utils::show($direccion->getErrors(), true);
-                    throw new HttpException("No se puede actualizar datos direccoin");
-                }
-
-
                 $transaction->commit();
             } catch (Exception $ex) {
                 Utils::show($ex, true);
@@ -171,14 +137,13 @@ class DefaultController extends Controller {
             Yii::$app->response->format = \yii\web\Response::FORMAT_JSON;
             Yii::$app->response->data = $entidades->id_entidad;
 
-
-            // echo json_encode($entidades->id_entidad);
         } else {
             throw new HttpException(404, 'The requested Item could not be found.');
         }
     }
 
     public function actionDelete() {
+        
         if (Yii::$app->request->post()) {
             $transaction = Yii::$app->db->beginTransaction();
             $post = Yii::$app->request->post();

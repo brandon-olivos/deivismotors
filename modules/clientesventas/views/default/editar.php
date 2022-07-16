@@ -63,7 +63,7 @@ $bundle = ClientesVentasAsset::register($this);
             <select class="form-control select2" id="ubigeos" name="ubigeos" style="width: 100%;">
                 <option value="" disabled selected>Seleccione</option>
                 <?php foreach ($ubigeos as $v): ?>
-                    <option value="<?= $v->id_ubigeo ?>" <?= $direccion->id_ubigeo == $v->id_ubigeo ? 'selected' : '' ?>>
+                    <option value="<?= $v->id_ubigeo ?>" <?= $entidad->id_ubigeo == $v->id_ubigeo ? 'selected' : '' ?>>
                         <?= $v->nombre_departamento . ' - ' . $v->nombre_provincia . ' - ' . $v->nombre_distrito ?>
                     </option>
                 <?php endforeach; ?>
@@ -71,21 +71,10 @@ $bundle = ClientesVentasAsset::register($this);
         </div>
         <div class="form-group col-md-6">
             <label>Direccion<span class="text-danger">*</span></label>
-            <input type="text" style="text-transform:uppercase;" onkeyup="javascript:this.value = this.value.toUpperCase();" class="form-control" placeholder="Ingrese Direccion" name="direccion" id="direccion" value="<?= $direccion->direccion ?>" />
+            <input type="text" style="text-transform:uppercase;" onkeyup="javascript:this.value = this.value.toUpperCase();" class="form-control" placeholder="Ingrese Direccion" name="direccion" id="direccion" value="<?= $entidad->direccion ?>" />
         </div>
     </div>
 
-    <div class="row">
-        <div class="form-group col-md-6">
-            <label>Urbanizacion<span class="text-danger">*</span></label>
-            <input type="text" style="text-transform:uppercase;" onkeyup="javascript:this.value = this.value.toUpperCase();" class="form-control" placeholder="Ingrese Urbanizacion" name="urbanizacion" id="urbanizacion" value="<?= $direccion->urbanizacion ?>" />
-        </div>
-
-        <div class="form-group col-md-6">
-            <label>Referencias<span class="text-danger">*</span></label>
-            <input type="text" style="text-transform:uppercase;" onkeyup="javascript:this.value = this.value.toUpperCase();" class="form-control" placeholder="Ingrese Referencias" name="referencias" id="referencias" value="<?= $direccion->referencias ?>"/>
-        </div> 
-    </div>
 
     <hr>
 
